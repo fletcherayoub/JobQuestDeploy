@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+h1 {
+    /* font-size: 4rem; */
+    @apply text-6xl;
+    @apply font-semibold;
+  }
+
+h2 {
+    @apply text-4xl;
+    @apply font-semibold
+}
+h3 {
+    @apply text-3xl;
+    @apply font-semibold
+}
