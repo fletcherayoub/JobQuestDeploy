@@ -20,7 +20,7 @@ const MyJobs = () => {
     const fetchJobs = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:4000/api/v1/job/getmyjobs",
+          "https://jobquestdeploy.onrender.com/api/v1/job/getmyjobs",
           { withCredentials: true }
         );
         const sortedJobs = data.myJobs.sort((a, b) => new Date(b.jobPostedOn) - new Date(a.jobPostedOn));
@@ -59,14 +59,14 @@ const MyJobs = () => {
     }
 
     try {
-      const res = await axios.put(`http://localhost:4000/api/v1/job/update/${jobId}`, formData, {
+      const res = await axios.put(`https://jobquestdeploy.onrender.com/api/v1/job/update/${jobId}`, formData, {
         withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       toast.success(res.data.message);
       setEditingMode(null);
       // Refresh job list
-      const { data } = await axios.get("http://localhost:4000/api/v1/job/getmyjobs", { withCredentials: true });
+      const { data } = await axios.get("https://jobquestdeploy.onrender.com/api/v1/job/getmyjobs", { withCredentials: true });
       setMyJobs(data.myJobs);
     } catch (error) {
       toast.error(error.response.data.message);
@@ -75,7 +75,7 @@ const MyJobs = () => {
 
   const handleDeleteJob = async (jobId) => {
     try {
-      const res = await axios.delete(`http://localhost:4000/api/v1/job/delete/${jobId}`, {
+      const res = await axios.delete(`https://jobquestdeploy.onrender.com/api/v1/job/delete/${jobId}`, {
         withCredentials: true,
       });
       toast.success(res.data.message);
