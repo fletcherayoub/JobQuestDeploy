@@ -17,29 +17,32 @@ const Login = () => {
   const { isAuthorized, setIsAuthorized } = useContext(Context);
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      const { data } = await axios.post(
-        "https://jobquestdeploy.onrender.com/api/v1/user/login",
-        { email, password, role },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-      toast.success(data.message);
-      setEmail("");
-      setPassword("");
-      setRole("");
-      setIsAuthorized(true);
-      setUserName(data.user.name);
-    } catch (error) {
-      toast.error(error.response.data.message);
-    }
-  };
+  e.preventDefault();
+  setIsLoading(true);
+  try {
+    const { data } = await axios.post(
+      "https://jobquestdeploy.onrender.com/api/v1/user/login",
+      { email, password, role },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+    );
+    
+    // Save the token to localStorage
+    localStorage.setItem('token', data.token); // Ensure your backend returns a token
+
+    // Update context state
+    setIsAuthorized(true);
+    setUserName(data.user.name);
+  } catch (error) {
+    toast.error(error.response.data.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
