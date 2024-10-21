@@ -23,17 +23,21 @@ const App = () => {
   const {isAuthorized, setIsAuthorized, setUser} = useContext(Context);
 
   useEffect(() => {
+
     const fetchUser = async () => {
       try {
         const response = await axios.get("https://jobquestdeploy.onrender.com/api/v1/user/getUser", {withCredentials: true });
         setUser(response.data.user);
+        console.log(response.data.user);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         setIsAuthorized(true);
       } catch (error) {
+        console.error("Error fetching user:", error);
         setIsAuthorized(false);
       }
     };
     fetchUser();
-  }, []);
+  }, [isAuthorized]);
   
   return (
     <>
