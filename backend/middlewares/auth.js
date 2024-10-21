@@ -14,5 +14,4 @@ export const isAuthenticated = catchAsyncError(async (req, res, next) => {
     next();
 
     
-    
 });
