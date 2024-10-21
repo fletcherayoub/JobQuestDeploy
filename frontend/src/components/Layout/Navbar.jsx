@@ -18,12 +18,19 @@ const Navbar = () => {
           withCredentials: true,
         }
       );
-      toast.success(response.data.message);
-      setIsAuthorized(false);
-      navigateTo("/login");
+      if (response.data.success) {
+        setIsAuthorized(false);
+        setUser(null);
+        localStorage.removeItem('user');
+        // Clear any other auth-related state or storage here
+        toast.success("Logged out successfully");
+        navigateTo("/login");
+      } else {
+        throw new Error("Logout failed");
+      }
     } catch (error) {
-      toast.error(error.response.data.message);
-      setIsAuthorized(true);
+      console.error("Logout error:", error);
+      toast.error("Logout failed. Please try again.");
     }
   };
 

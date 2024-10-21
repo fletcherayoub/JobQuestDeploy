@@ -24,6 +24,7 @@ const App = () => {
 
   useEffect(() => {
 
+
     const fetchUser = async () => {
       try {
         const response = await axios.get("https://jobquestdeploy.onrender.com/api/v1/user/getUser", {withCredentials: true });
