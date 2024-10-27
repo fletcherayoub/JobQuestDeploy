@@ -1,98 +1,141 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { templates } from './Templates';
-import html2canvas from 'html2canvas';
+import html2canvas from '@nidi/html2canvas';
+import { jsPDF } from 'jspdf';
+import { DownloadCloud, Image, Edit } from 'lucide-react';
 
-const CvPreview = ({ personalInfo, education, experience, selectedTemplate, onEdit, onDownload }) => {
+// A4 dimensions in pixels at 96 DPI
+const A4_WIDTH_MM = 210;
+const A4_HEIGHT_MM = 297;
+const MM_TO_PX = 3.7795275591;
+const A4_WIDTH_PX = Math.floor(A4_WIDTH_MM * MM_TO_PX);
+const A4_HEIGHT_PX = Math.floor(A4_HEIGHT_MM * MM_TO_PX);
+
+const CvPreview = ({ personalInfo, education, experience, selectedTemplate, onEdit }) => {
   const cvPreviewRef = useRef(null);
 
-  const handleJpgDownload = async () => {
+  useEffect(() => {
     if (cvPreviewRef.current) {
-      try {
-        // Create canvas from the CV preview
-        const canvas = await html2canvas(cvPreviewRef.current, {
-          scale: 2, // Higher quality
-          useCORS: true,
-          backgroundColor: '#ffffff'
-        });
+      cvPreviewRef.current.style.width = `${A4_WIDTH_PX}px`;
+      cvPreviewRef.current.style.height = `${A4_HEIGHT_PX}px`;
+    }
+  }, [personalInfo, education, experience, selectedTemplate]);
 
-        // Convert canvas to JPG and download
-        const jpgUrl = canvas.toDataURL('image/jpeg', 1.0);
-        const link = document.createElement('a');
-        link.download = `${personalInfo.name || 'cv'}_resume.jpg`;
-        link.href = jpgUrl;
-        link.click();
-      } catch (error) {
-        console.error('Error generating JPG:', error);
-      }
+  const generatePDF = async () => {
+    if (!cvPreviewRef.current) return;
+
+    try {
+      await document.fonts.ready;
+      
+      const canvas = await html2canvas(cvPreviewRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        width: A4_WIDTH_PX,
+        height: A4_HEIGHT_PX,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      pdf.addImage(imgData, 'PNG', 0, 0, A4_WIDTH_MM, A4_HEIGHT_MM);
+      pdf.save(`${personalInfo.name || 'cv'}_resume.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
+
+  const handleJpgDownload = async () => {
+    if (!cvPreviewRef.current) return;
+
+    try {
+      await document.fonts.ready;
+      
+      const canvas = await html2canvas(cvPreviewRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        width: A4_WIDTH_PX,
+        height: A4_HEIGHT_PX,
+        backgroundColor: '#ffffff'
+      });
+
+      const jpgUrl = canvas.toDataURL('image/jpeg', 1.0);
+      const link = document.createElement('a');
+      link.download = `${personalInfo.name || 'cv'}_resume.jpg`;
+      link.href = jpgUrl;
+      link.click();
+    } catch (error) {
+      console.error('Error generating JPG:', error);
     }
   };
 
   return (
-    <div>
-      <div 
-        ref={cvPreviewRef} 
-        className="cv-preview border border-gray-300 p-5 rounded-md bg-white"
-      >
-        <style>{templates[selectedTemplate].styles}</style>
-        <div 
-          dangerouslySetInnerHTML={{ 
-            __html: templates[selectedTemplate].html({
-              personalInfo, 
-              education, 
-              experience
-            }) 
-          }} 
-        />
+    <div className="flex flex-col items-center">
+      <div className="overflow-auto max-h-[80vh] mb-4 p-4 bg-gray-100 w-full">
+        <div
+          ref={cvPreviewRef}
+          className="cv-preview shadow-lg bg-white mx-auto"
+          style={{
+            width: `${A4_WIDTH_PX}px`,
+            height: `${A4_HEIGHT_PX}px`,
+            overflow: 'hidden',
+            position: 'relative',
+            textRendering: 'optimizeLegibility',
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale',
+            transform: 'scale(1)',
+            transformOrigin: 'top left'
+          }}
+        >
+          <style>
+            {`
+              @media print {
+                .cv-preview {
+                  width: 210mm !important;
+                  height: 297mm !important;
+                }
+              }
+              ${templates[selectedTemplate].styles}
+            `}
+          </style>
+          <div
+            className="w-full h-full relative"
+            dangerouslySetInnerHTML={{
+              __html: templates[selectedTemplate].html({ personalInfo, education, experience })
+            }}
+          />
+        </div>
       </div>
 
-      <div className="mt-4 space-y-3">
-        {/* Edit button */}
-        <button
+      <div className="w-full max-w-md space-y-3">
+        <button 
           onClick={onEdit}
-          className="btn bg-blue-500 hover:bg-blue-600 text-white w-full py-2 rounded-md transition-colors duration-200"
+          className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md transition-colors duration-200"
         >
+          <Edit className="w-5 h-5" />
           Edit CV
         </button>
-
-        {/* Download options */}
+        
         <div className="flex gap-3">
-          <button
-            onClick={onDownload}
-            className="flex-1 btn bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-md transition-colors duration-200 flex items-center justify-center gap-2"
+          <button 
+            onClick={generatePDF}
+            className="flex-1 flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-md transition-colors duration-200"
           >
-            <svg 
-              className="w-5 h-5" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" 
-              />
-            </svg>
+            <DownloadCloud className="w-5 h-5" />
             Download PDF
           </button>
           
-          <button
+          <button 
             onClick={handleJpgDownload}
-            className="flex-1 btn bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-md transition-colors duration-200 flex items-center justify-center gap-2"
+            className="flex-1 flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-white py-2 rounded-md transition-colors duration-200"
           >
-            <svg 
-              className="w-5 h-5" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
-              />
-            </svg>
+            <Image className="w-5 h-5" />
             Download JPG
           </button>
         </div>
@@ -100,5 +143,5 @@ const CvPreview = ({ personalInfo, education, experience, selectedTemplate, onEd
     </div>
   );
 };
-// export default CvPreview;
+
 export default CvPreview;

@@ -56,7 +56,7 @@ const Application = () => {
         coverLetter: "",
         resume: null,
       });
-      toast.success(data.message);
+      toast.success('The Employer will contact you soon.');
       navigateTo("/job/getall");
     } catch (error) {
       toast.error(error.response?.data?.message || "An error occurred");

@@ -62,8 +62,6 @@ const App = () => {
       <Toaster />
     <BtnCvMaker/>
     </Router>
-
-
     </>
   )
 }

@@ -31,6 +31,17 @@ const PersonalInfoForm = ({ personalInfo, setPersonalInfo, selectedTemplate, set
         />
       </div>
       <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">Profile</label>
+        <input
+          type="text"
+          className="form-input w-full border border-gray-300 p-2 rounded-md"
+          name="profile"
+          value={personalInfo.profile}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Email</label>
         <input
           type="email"
@@ -81,7 +92,11 @@ const PersonalInfoForm = ({ personalInfo, setPersonalInfo, selectedTemplate, set
         >
           <option value="classic">Classic</option>
           <option value="modern">Modern</option>
+          <option value="QuestOne">QuestOne</option>
           <option value="minimalist">Minimalist</option>
+          <option value="professional">Professional</option>
+          <option value="business">Business</option>
+          <option value="simple">simple</option>
         </select>
       </div>
     </div>

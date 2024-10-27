@@ -4,31 +4,31 @@ const Card = () => {
   const cardsData = [
     { 
       category: 'CV', 
-      title: 'Craft the Perfect CV', 
+      title: 'Create a standout CV that highlights your skills', 
       imageUrl: '../../person2.jpg' 
     },
     { 
-      category: 'APPLICATION', 
-      title: 'Master the Interview Process', 
-      imageUrl: '../../person3.jpg' 
-    },
-    { 
-      category: 'JOB ENTRY', 
-      title: 'Utilize the Trial Period Effectively', 
+      category: 'Find Jobs', 
+      title: 'Browse through available job listings. Post job offers if you re hiring.', 
       imageUrl: '../../person4.jpg' 
     },
     { 
-      category: 'CAREER', 
-      title: 'Use Decision-Making Methods to Choose the Right Job', 
+      category: 'Applications', 
+      title: 'Get ready with resources to craft compelling resumes and cover letters tailored to each job opportunity.', 
+      imageUrl: '../../person3.jpg' 
+    },
+    { 
+      category: 'Track', 
+      title: 'Submit your applications and wait for employers to reach out to you with updates and interview invitations.', 
       imageUrl: '../../person5.jpg' 
     },
   ];
 
   const categoryStyles = {
     CV: 'bg-blue-500 text-white',
-    APPLICATION: 'bg-yellow-500 text-white',
-    'JOB ENTRY': 'bg-green-500 text-white',
-    CAREER: 'bg-red-500 text-white',
+    'Find Jobs': 'bg-yellow-500 text-white',
+    Applications: 'bg-green-500 text-white',
+    Track: 'bg-red-500 text-white',
   };
 
   return (
