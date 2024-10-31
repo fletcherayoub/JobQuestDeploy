@@ -1,13 +1,22 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { FileText, ChevronRight } from 'lucide-react';
 
 const BtnCvMaker = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check if current route is CvMaker or CvPreview
+  const shouldHideButton = 
+    location.pathname === '/cvMaker' || 
+    location.pathname === '/cvPreview';
 
   const openCvMaker = () => {
     navigate("/cvMaker");
   };
+
+  // Don't render the button if we're on CvMaker or CvPreview routes
+  if (shouldHideButton) return null;
 
   return (
     <div className="fixed bottom-8 right-8 z-50">
