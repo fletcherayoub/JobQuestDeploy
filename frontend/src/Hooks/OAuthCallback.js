@@ -1,42 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader2 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
 const OAuthCallback = ({ setUser, setIsAuthorized }) => {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  console.log("bidaya");
+  console.log("Starting OAuth callback...");
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log("okokokokok");
+      console.log("Fetching user data...");
+
       try {
         const response = await fetch("https://jobquestdeploy.onrender.com/api/v1/user/userData", {
-          credentials: "include",
-          withCredentials: true,
-          
+          credentials: "include"
         });
-        console.log("okok");
+
+        console.log("Response received, processing...");
 
         if (!response.ok) {
+          console.error(`Failed to fetch user data: Status ${response.status}, ${response.statusText}`);
           throw new Error(`Failed to fetch user data: ${response.statusText}`);
         }
 
         const data = await response.json();
-        
-        if (data) {
-          console.log("Received user data:", data);
 
-          
-          // Store user data
+        if (data) {
+          console.log("User data received:", data);
+
+          // Store user data in localStorage
           localStorage.setItem("user", JSON.stringify(data));
           
-          // Update global state if the props are provided
+          // Update global state
           if (setUser) setUser(data);
           if (setIsAuthorized) setIsAuthorized(true);
-          
+
           // Redirect to home page
           navigate("/");
         } else {
@@ -48,16 +48,26 @@ const OAuthCallback = ({ setUser, setIsAuthorized }) => {
         setIsLoading(false);
         setTimeout(() => {
           navigate("/login");
-        }, 3000);
+        }, 3000); // Redirects after 3 seconds if there's an error
       }
     };
 
     fetchUserData();
   }, [navigate, setUser, setIsAuthorized]);
 
-  
-
-  
+  // Render loading or error message if needed
+  return (
+    <div>
+      {isLoading ? (
+        <Loader2 className="animate-spin" />
+      ) : error ? (
+        <div>
+          <p>Error: {error}</p>
+          <p>Redirecting to login...</p>
+        </div>
+      ) : null}
+    </div>
+  );
 };
 
 export default OAuthCallback;
