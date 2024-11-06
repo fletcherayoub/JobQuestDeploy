@@ -17,17 +17,7 @@ const app = express();
 dotenv.config({ path: "./config/config.env" });
 
 // Session setup
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET || "yourSecretKey",
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
-        },
-    })
-);
+
 
 // Initialize passport and session handling
 app.use(passport.initialize());
