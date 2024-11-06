@@ -12,20 +12,20 @@ import { dbConnection } from './database/dbConnection.js';
 import { errorMiddleware } from './middlewares/error.js';
 import { updateProfile } from './controllers/userController.js';
 import { isAuthenticated } from './middlewares/auth.js';
+import cookieSession from 'cookie-session';
 
 const app = express();
 dotenv.config({ path: "./config/config.env" });
 
 // Session setup
+
+// Cookie session setup
 app.use(
-    session({
-        secret: process.env.SESSION_SECRET || "yourSecretKey",
-        resave: false,
-        saveUninitialized: false,
-        cookie: {
-            secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-            maxAge: 24 * 60 * 60 * 1000, // 1 day
-        },
+    cookieSession({
+        name: 'session',
+        secret: process.env.SESSION_SECRET || 'yourSecretKey',
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
     })
 );
 
