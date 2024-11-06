@@ -19,38 +19,48 @@ const userSchema = new mongoose.Schema({
     phone: {
         
         type: String,
-        required: [true, "Please enter your phone number"],
+        // required: [true, "Please enter your phone number"],
     },
     password: {
         type: String,
-        required: [true, "Please enter your password"],
+        // required: [true, "Please enter your password"],
         minLength: [8, "Password should be greater than 8 characters"],
         maxLength: [32, "Password should be less than 32 characters"],
         select: false
-
     },
-    
-
+    profilePicture: {
+        public_id: {
+            type: String,
+          },
+          url: {
+            type: String,
+          },
+      },
     role: {
         type: String,
-        required: [true, "Please enter your role"],
+        // required: [true, "Please enter your role"],
         enum: ["Job Seeker", "Employer"],
+    },
+    googleId: {
+        type: String,
     },
 
     createdAt:{
         type: Date,
         default: Date.now,
     },
+    
 });
 
 
 //Hashing password
-userSchema.pre("save", async function(next) {
-    if (!this.isModified("password")) {
-        next();
+userSchema.pre("save", async function (next) {
+    // Only hash the password if it has been modified and exists
+    if (this.isModified("password") && this.password) {
+      this.password = await bcrypt.hash(this.password, 10);
     }
-    this.password = await bcrypt.hash(this.password, 10);
-});
+    next();
+  });
 
 //COMPARING PASSWORD
 userSchema.methods.comparePassword = async function(enteredPassword) {
@@ -68,4 +78,4 @@ userSchema.methods.getJWTToken = function() {
 
 export const User = mongoose.model("User", userSchema);
 
-
+export default User;

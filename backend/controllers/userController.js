@@ -2,7 +2,7 @@ import {catchAsyncError} from "../middlewares/catchAsyncError.js";
 import ErrorHandler from "../middlewares/error.js";
 import {User} from "../models/userSchema.js";
 import {sendToken} from "../utils/jwtToken.js"; 
-
+import cloudinary from "cloudinary";
 export const register = catchAsyncError(async(req, res, next)=>{
     const {name, email, phone, role, password } = req.body;
     if (!name || !email || !phone || !role || !password) {
@@ -46,20 +46,15 @@ export const login = catchAsyncError(async(req, res, next) => {
     sendToken(user, 200, res, "user logged in successfully");
 });
 
-export const logout = catchAsyncError(async (req, res, next) => {
-    res
-      .status(200)
-      .clearCookie('token', {
+export const logout = catchAsyncError(async(req, res, next) => {
+    res.status(201).cookie("token","", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        path: "/"
-      })
-      .json({
+        expires: new Date(Date.now()),
+    }).json({
         success: true,
-        message: "User logged out successfully",
-      });
-  });
+        message: "user logged out successfully",
+    });
+});
 
 export const getUser = catchAsyncError(async(req, res, next) => {
     const user = req.user;
@@ -68,3 +63,61 @@ export const getUser = catchAsyncError(async(req, res, next) => {
         user,
     });
 })
+
+export const updateProfile = catchAsyncError(async (req, res, next) => {
+    try {
+        const { name, phone, password, newPassword } = req.body;
+        const user = await User.findById(req.user.id).select('+password');
+
+        if (!user) {
+            return next(new ErrorHandler("User not found", 404));
+        }
+
+        // Update basic info
+        if (name) user.name = name;
+        if (phone) user.phone = phone;
+
+        // Handle password update
+        if (password && newPassword) {
+            const isPasswordCorrect = await user.comparePassword(password);
+            if (!isPasswordCorrect) {
+                return next(new ErrorHandler("Current password is incorrect", 400));
+            }
+            user.password = newPassword;
+        }
+
+        // Handle profile picture upload
+        if (req.files && req.files.profilePicture) {
+            // Delete old image if exists
+            if (user.profilePicture && user.profilePicture.public_id) {
+                await cloudinary.v2.uploader.destroy(user.profilePicture.public_id);
+            }
+
+            // Upload new image
+            const result = await cloudinary.v2.uploader.upload(req.files.profilePicture.tempFilePath, {
+                folder: "profilePictures",
+                width: 150,
+                crop: "scale",
+              });
+              user.profilePicture = {
+                public_id: result.public_id,
+                url: result.secure_url,
+            };
+        }
+
+        await user.save();
+
+        // Remove password from response
+        const userToSend = user.toObject();
+        delete userToSend.password;
+
+        res.status(200).json({
+            success: true,
+            message: "Profile updated successfully",
+            user: userToSend
+        });
+
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+});

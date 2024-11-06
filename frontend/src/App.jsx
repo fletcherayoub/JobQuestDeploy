@@ -18,6 +18,8 @@ import axios from 'axios';
 import {Toaster} from 'react-hot-toast';
 import CvMaker from './components/makeCv/CvMaker';
 import BtnCvMaker from './components/makeCv/BtnCvMaker';
+import LoadingScreen from './components/LoadingScreen';
+import OAuthCallback from './Hooks/OAuthCallback';
 
 const App = () => {
   const {isAuthorized, setIsAuthorized, setUser} = useContext(Context);
@@ -43,6 +45,7 @@ const App = () => {
   return (
     <>
     <Router>
+    <LoadingScreen />
       <Navbar />
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -56,7 +59,7 @@ const App = () => {
         <Route path="/applications/me" element={<MyApplications />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/cvMaker" element={<CvMaker/>} />
-        
+        <Route path="/oauth-callback" element={<OAuthCallback/>} />
       </Routes>
       <Footer />
       <Toaster />
