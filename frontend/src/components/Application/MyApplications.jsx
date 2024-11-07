@@ -25,14 +25,14 @@ const MyApplications = () => {
           ? "/api/v1/application/employer/getall"
           : "/api/v1/application/jobseeker/getall";
 
-        const response = await axios.get(`https://jobquestdeploy.onrender.com${endpoint}`, {
+        const response = await axios.get(`http://localhost:4000${endpoint}`, {
           withCredentials: true,
           params: { page: currentPage, limit: 10 }
         });
 
         const applicationsWithJobs = await Promise.all(response.data.applications.map(async (app) => {
           try {
-            const jobResponse = await axios.get(`https://jobquestdeploy.onrender.com/api/v1/job/${app.jobId}`, {
+            const jobResponse = await axios.get(`http://localhost:4000/api/v1/job/${app.jobId}`, {
               withCredentials: true,
             });
             return { ...app, jobDetails: jobResponse.data.job };
@@ -58,7 +58,7 @@ const MyApplications = () => {
   const deleteApplication = async (id) => {
     if (window.confirm("Are you sure you want to delete this application?")) {
       try {
-        await axios.delete(`https://jobquestdeploy.onrender.com/api/v1/application/delete/${id}`, {
+        await axios.delete(`http://localhost:4000/api/v1/application/delete/${id}`, {
           withCredentials: true,
         });
         toast.success("Application deleted successfully");
@@ -71,135 +71,245 @@ const MyApplications = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="bg-white shadow-md rounded px-4 sm:px-8 pt-6 pb-8 mb-4">
-        <h2 className="text-2xl font-bold mb-4">
-          {user.role === "Employer" ? "Applications From Job Seekers" : "My Applications"}
-        </h2>
-        {applications.length === 0 ? (
-          <p className="text-center text-gray-500">No applications found.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <div className="grid grid-cols-1 gap-4 sm:hidden">
-              {applications.map((application) => (
-                <div key={application._id} className="bg-white p-4 rounded-lg shadow">
-                  <p><strong>Name:</strong> {application.name}</p>
-                  <p><strong>Email:</strong> {application.email}</p>
-                  <p><strong>Phone:</strong> {application.phone}</p>
-                  <p><strong>Job Applied To:</strong> {application?.jobId?.title || 'Not available'}</p>
-                  <div className="mt-2 flex justify-between">
-                    <button
-                      className="bg-teal-600 hover:bg-teal-700 transition text-white font-bold py-1 px-2 rounded"
-                      onClick={() => setSelectedApplication(application)}
-                    >
-                      View
-                    </button>
-                    <button
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                      onClick={() => deleteApplication(application._id)}
-                    >
-                      Delete
-                    </button>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-6 border-b border-gray-100">
+            <h2 className="text-3xl font-semibold text-gray-800">
+              {user.role === "Employer" ? "Applications From Job Seekers" : "My Applications"}
+            </h2>
+          </div>
+
+          {applications.length === 0 ? (
+            <div className="p-12 text-center">
+              <div className="text-gray-400">
+                <svg 
+                  className="mx-auto h-12 w-12" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" 
+                  />
+                </svg>
+                <p className="mt-2 text-lg">No applications found</p>
+              </div>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              {/* Mobile View */}
+              <div className="grid grid-cols-1 gap-4 p-4 sm:hidden">
+                {applications.map((application) => (
+                  <div key={application._id} 
+                    className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md transition-all duration-200">
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center">
+                          {application.applicantID?.user?.profilePicture?.url ? (
+                            <img
+                              src={application.applicantID.user.profilePicture.url}
+                              alt="Profile"
+                              className="h-10 w-10 rounded-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-teal-600 font-medium">
+                              {application.name.charAt(0)}
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{application.name}</p>
+                          <p className="text-sm text-gray-500">{application.email}</p>
+                        </div>
+                      </div>
+                      <div className="pt-2">
+                        <p className="text-sm text-gray-600">
+                          <span className="font-medium">Job: </span>
+                          {application?.jobId?.title || 'Not available'}
+                        </p>
+                      </div>
+                      <div className="flex space-x-2 pt-3">
+                        <button
+                          className="flex-1 bg-teal-50 text-teal-700 hover:bg-teal-100 px-4 py-2 rounded-lg font-medium text-sm transition-colors"
+                          onClick={() => setSelectedApplication(application)}
+                        >
+                          View Details
+                        </button>
+                        <button
+                          className="flex-1 bg-red-50 text-red-700 hover:bg-red-100 px-4 py-2 rounded-lg font-medium text-sm transition-colors"
+                          onClick={() => deleteApplication(application._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
+              </div>
+
+              {/* Desktop View */}
+              <table className="w-full hidden sm:table">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">Applicant</th>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">Contact</th>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-500">Job Position</th>
+                    <th className="px-6 py-4 text-right text-sm font-medium text-gray-500">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {applications.map((application) => (
+                    <tr key={application._id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="flex items-center">
+                          <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center">
+                            {application.applicantID?.user?.profilePicture?.url ? (
+                              <img
+                                src={application.applicantID.user.profilePicture.url}
+                                alt="Profile"
+                                className="h-10 w-10 rounded-full object-cover"
+                              />
+                            ) : (
+                              <span className="text-teal-600 font-medium">
+                                {application.name.charAt(0)}
+                              </span>
+                            )}
+                          </div>
+                          <div className="ml-4">
+                            <div className="font-medium text-gray-900">{application.name}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900">{application.email}</div>
+                        <div className="text-sm text-gray-500">{application.phone}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-gray-900">
+                          {application?.jobId?.title || 'Not available'}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          className="text-teal-600 hover:text-teal-900 font-medium text-sm mx-2"
+                          onClick={() => setSelectedApplication(application)}
+                        >
+                          View
+                        </button>
+                        {user.role !== "Employer" && (
+                        <button
+                          className="text-red-600 hover:text-red-900 font-medium text-sm mx-2"
+                          onClick={() => deleteApplication(application._id)}
+                        >
+                          Delete
+                        </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Pagination */}
+          <div className="px-6 py-4 border-t border-gray-100">
+            <div className="flex justify-center space-x-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+                    currentPage === page 
+                      ? 'bg-teal-600 text-white' 
+                      : 'text-gray-500 hover:bg-gray-100'
+                  }`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
               ))}
             </div>
-            <table className="min-w-full bg-white hidden sm:table">
-              <thead>
-                <tr>
-                  <th className="py-2 px-2 sm:px-4 border-b">Name</th>
-                  <th className="py-2 px-2 sm:px-4 border-b">Email</th>
-                  <th className="py-2 px-2 sm:px-4 border-b">Phone</th>
-                  <th className="py-2 px-2 sm:px-4 border-b">Job Applied To</th>
-                  <th className="py-2 px-2 sm:px-4 border-b">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {applications.map((application) => (
-                  <tr key={application._id}>
-                    <td className="py-2 px-2 sm:px-4 border-b">{application.name}</td>
-                    <td className="py-2 px-2 sm:px-4 border-b">{application.email}</td>
-                    <td className="py-2 px-2 sm:px-4 border-b">{application.phone}</td>
-                    <td className="py-2 px-2 sm:px-4 border-b">
-                      {application?.jobId?.title || 'Not available'}
-                    </td>
-                    <td className="py-2 px-2 sm:px-4 border-b">
-                      <button
-                        className="bg-teal-600 hover:bg-teal-700 transition text-white font-bold py-1 px-2 rounded mr-2 mb-1 sm:mb-0"
-                        onClick={() => setSelectedApplication(application)}
-                      >
-                        View
-                      </button>
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
-                        onClick={() => deleteApplication(application._id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
-        )}
-        <div className="mt-4 flex justify-center">
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-            <button
-              key={page}
-              className={`mx-1 px-3 py-1 rounded ${
-                currentPage === page ? 'bg-teal-600 text-white' : 'bg-gray-200'
-              }`}
-              onClick={() => setCurrentPage(page)}
-            >
-              {page}
-            </button>
-          ))}
         </div>
       </div>
+
+      {/* Modal */}
       {selectedApplication && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50" id="my-modal">
-          <div className="relative top-20 mx-auto p-5 border w-full max-w-md sm:max-w-lg shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">Application Details</h3>
-              <div className="mt-2 px-2 sm:px-7 py-3 text-left">
-                <p className="text-sm text-gray-500 mb-1">
-                  <strong>Name:</strong> {selectedApplication.name}
-                </p>
-                <p className="text-sm text-gray-500 mb-1">
-                  <strong>Email:</strong> {selectedApplication.email}
-                </p>
-                <p className="text-sm text-gray-500 mb-1">
-                  <strong>Phone:</strong> {selectedApplication.phone}
-                </p>
-                <p className="text-sm text-gray-500 mb-1">
-                  <strong>Address:</strong> {selectedApplication.address}
-                </p>
-                <p className="text-sm text-gray-500 mb-1">
-                  <strong>Job Applied To:</strong> {selectedApplication?.jobId?.title || 'Not available'}
-                </p>
-                <p className="text-sm text-gray-500 mb-1">
-                  <strong>Cover Letter:</strong> {selectedApplication.coverLetter}
-                </p>
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex justify-between items-center">
+                <h3 className="text-xl font-semibold text-gray-900">Application Details</h3>
+                <button
+                  onClick={() => setSelectedApplication(null)}
+                  className="text-gray-400 hover:text-gray-500"
+                >
+                  <span className="sr-only">Close</span>
+                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-500">Name</p>
+                  <p className="text-gray-900">{selectedApplication.name}</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-500">Email</p>
+                  <p className="text-gray-900">{selectedApplication.email}</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-500">Phone</p>
+                  <p className="text-gray-900">{selectedApplication.phone}</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-500">Address</p>
+                  <p className="text-gray-900">{selectedApplication.address}</p>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-500">Job Position</p>
+                <p className="text-gray-900">{selectedApplication?.jobId?.title || 'Not available'}</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-500">Cover Letter</p>
+                <p className="text-gray-900 whitespace-pre-wrap">{selectedApplication.coverLetter}</p>
+              </div>
+              
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-500">Resume</p>
                 <img 
                   src={selectedApplication.resume.url} 
                   alt="Resume" 
-                  className="mt-4 max-w-full h-auto"
+                  className="max-w-full h-auto rounded-lg border border-gray-200"
                 />
               </div>
-              <div className="items-center px-4 py-3">
-                <button
-                  id="ok-btn"
-                  className="px-4 py-2 bg-teal-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-teal-700 transition focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  onClick={() => setSelectedApplication(null)}
-                >
-                  Close
-                </button>
-              </div>
+            </div>
+            
+            <div className="p-6 border-t border-gray-100">
+              <button
+                className="w-full bg-teal-600 text-white py-2 px-4 rounded-lg hover:bg-teal-700 transition-colors"
+                onClick={() => setSelectedApplication(null)}
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

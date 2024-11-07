@@ -4,7 +4,6 @@ import { Navigate, Link } from 'react-router-dom';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import LoadingScreen from '../LoadingScreen';
 // Assuming you have a Context setup similar to your original code
 import { Context } from '../../main';
 import useGoogle from '../../Hooks/google';
@@ -257,7 +256,6 @@ const Login = () => {
                 {isLoading ? (
                   
                   <>
-                  <LoadingScreen />
                     <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5" />
                     Signing in...
                   </>

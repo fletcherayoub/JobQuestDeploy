@@ -36,17 +36,17 @@ const HeroSection = () => {
     <>
       <div className="heroSection bg-slate-800 text-slate-50">
         <div className="container">
-          <div className="title">
-            <h1>Find your job </h1>
-            <h1>and ensure success</h1>
-            <p>
+          <div className="title overflow-hidden">
+            <h1 className="overflow-hidden">Find your job </h1>
+            <h1 className="overflow-hidden">and ensure success</h1>
+            <p className="overflow-hidden">
             JobQuest designed to connect job seekers with their dream careers.
             Whether you're a recent graduate, a seasoned professional 
             looking for a change, or someone re-entering the workforce,
             our platform provides the tools and resources
             you need to find your perfect job.
             </p>
-            <div className="mt-8 flex justify-center">
+            <div className="mt-8 flex justify-center overflow-hidden">
             <NavLink
                   to="/job/getall"
                   className={({ isActive }) =>

@@ -288,7 +288,7 @@ const PostJob = () => {
 
         {/* Additional professional element */}
         <div className="text-center text-sm text-gray-500 mt-4">
-          <p>Join thousands of companies finding top talent every day</p>
+          <p className="overflow-hidden">Join thousands of companies finding top talent every day</p>
         </div>
       </div>
     </div>

@@ -95,7 +95,12 @@ export const employerGetAllApplications = catchAsyncError(
       );
     }
     const { _id } = req.user;
-    const applications = await Application.find({ "employerID.user": _id }).populate("jobId");
+    const applications = await Application.find({ "employerID.user": _id })
+    .populate("jobId")
+    .populate({
+      path: "applicantID.user",
+      select: "profilePicture.url name" // Add any other fields you want to get from the User model
+    });
     res.status(200).json({
       success: true,
       applications,
