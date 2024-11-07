@@ -25,14 +25,14 @@ const MyApplications = () => {
           ? "/api/v1/application/employer/getall"
           : "/api/v1/application/jobseeker/getall";
 
-        const response = await axios.get(`http://localhost:4000${endpoint}`, {
+        const response = await axios.get(`https://jobquestdeploy.onrender.com${endpoint}`, {
           withCredentials: true,
           params: { page: currentPage, limit: 10 }
         });
 
         const applicationsWithJobs = await Promise.all(response.data.applications.map(async (app) => {
           try {
-            const jobResponse = await axios.get(`http://localhost:4000/api/v1/job/${app.jobId}`, {
+            const jobResponse = await axios.get(`https://jobquestdeploy.onrender.com/api/v1/job/${app.jobId}`, {
               withCredentials: true,
             });
             return { ...app, jobDetails: jobResponse.data.job };
@@ -41,11 +41,10 @@ const MyApplications = () => {
             return { ...app, jobDetails: null };
           }
         }));
-
         setApplications(applicationsWithJobs);
         setTotalPages(response.data.totalPages || 1);
       } catch (error) {
-        toast.error("Failed to fetch applications. Please try again.");
+        // toast.error("Failed to fetch applications. Please try again.");
         console.error("Error fetching applications:", error);
       } finally {
         setLoading(false);
@@ -58,7 +57,7 @@ const MyApplications = () => {
   const deleteApplication = async (id) => {
     if (window.confirm("Are you sure you want to delete this application?")) {
       try {
-        await axios.delete(`http://localhost:4000/api/v1/application/delete/${id}`, {
+        await axios.delete(`https://jobquestdeploy.onrender.com/api/v1/application/delete/${id}`, {
           withCredentials: true,
         });
         toast.success("Application deleted successfully");
