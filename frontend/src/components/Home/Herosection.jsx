@@ -36,10 +36,10 @@ const HeroSection = () => {
     <>
       <div className="heroSection bg-slate-800 text-slate-50">
         <div className="container">
-          <div className="title overflow-hidden">
-            <h1 className="overflow-hidden">Find your job </h1>
-            <h1 className="overflow-hidden">and ensure success</h1>
-            <p className="overflow-hidden">
+          <div className="title overflow-clip">
+            <h1 className="overflow-clip">Find your job </h1>
+            <h1 className="overflow-clip">and ensure success</h1>
+            <p className="overflow-clip">
             JobQuest designed to connect job seekers with their dream careers.
             Whether you're a recent graduate, a seasoned professional 
             looking for a change, or someone re-entering the workforce,

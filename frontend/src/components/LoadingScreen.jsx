@@ -46,9 +46,9 @@ const LoadingScreen = () => {
   return (
     <div className="fixed inset-0 bg-gradient-to-br from-teal-700 to-teal-500 flex flex-col items-center justify-center z-50">
       {/* Main Loading Animation */}
-      <div className="relative w-72 h-72 mb-12">
+      <div className="relative w-72 h-72 mb-12 overflow-clip">
         {/* Outer rotating circles */}
-        <div className="absolute inset-0 animate-spin-slow">
+        <div className="absolute inset-0 animate-spin-slow overflow-clip">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-5 h-5 bg-white/40 rounded-full"></div>
           <div className="absolute top-1/2 right-0 -translate-y-1/2 w-5 h-5 bg-white/50 rounded-full"></div>
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-5 h-5 bg-white/60 rounded-full"></div>
@@ -56,22 +56,22 @@ const LoadingScreen = () => {
         </div>
 
         {/* Middle layer with floating dots */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 overflow-clip">
           <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-white rounded-full animate-float-up"></div>
           <div className="absolute bottom-1/4 right-1/4 w-4 h-4 bg-white rounded-full animate-float-down delay-300"></div>
           <div className="absolute top-1/2 left-1/3 w-4 h-4 bg-white rounded-full animate-float-diagonal delay-700"></div>
         </div>
 
         {/* Center spinner */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative">
+        <div className="absolute inset-0 flex items-center justify-center overflow-clip">
+          <div className="relative overflow-clip">
             {/* Outer ring */}
-            <div className="w-40 h-40 rounded-full border-8 border-white/30 flex items-center justify-center">
+            <div className="w-40 h-40 rounded-full border-8 border-white/30 flex items-center justify-center overflow-clip">
               <div className="w-32 h-32 rounded-full border-8 border-white animate-spin"></div>
             </div>
             
             {/* Inner pulsing circle */}
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center overflow-clip">
               <div className="w-20 h-20 bg-white/20 rounded-full animate-pulse"></div>
               <div className="absolute w-16 h-16 bg-white/30 rounded-full animate-pulse delay-150"></div>
               <div className="absolute w-12 h-12 bg-white/40 rounded-full animate-pulse delay-300"></div>

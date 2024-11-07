@@ -27,7 +27,6 @@ const OAuthCallback = ({ setUser, setIsAuthorized }) => {
         const data = await response.json();
         
         if (data) {
-          console.log("Received user data:", data);
 
           
           // Store user data
