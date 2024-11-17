@@ -42,9 +42,8 @@ const HeroSection = () => {
             <p className="overflow-clip">
             JobQuest designed to connect job seekers with their dream careers.
             Whether you're a recent graduate, a seasoned professional 
-            looking for a change, or someone re-entering the workforce,
-            our platform provides the tools and resources
-            you need to find your perfect job.
+            looking for a change, or a company seeking top talent,
+            our platform provides all you need to find your perfect job.
             </p>
             <div className="mt-8 flex justify-center overflow-hidden">
             <NavLink

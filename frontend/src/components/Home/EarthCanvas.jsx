@@ -1,15 +1,15 @@
-import { useState, useRef, Suspense } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Environment, OrbitControls } from '@react-three/drei'
 import Earth from "./Earth.jsx"
 
-function RotatingEarth() {
+function RotatingEarth({ isMobile }) {
   const groupRef = useRef()
 
   useFrame(({ clock }) => {
-    if (groupRef.current) {
+    if (groupRef.current && !isMobile) {
       const elapsedTime = clock.getElapsedTime()
-      groupRef.current.rotation.y = elapsedTime * 0.1 // Adjust rotation speed here
+      groupRef.current.rotation.y = elapsedTime * 0.1 // Rotate only on non-mobile
     }
   })
 
@@ -21,18 +21,36 @@ function RotatingEarth() {
 }
 
 function EarthCanvas() {
-  const [count, setCount] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768)
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   return (
     <>
-      <Canvas camera={{ position: [0.5, 0.5, 0.5] }}>
-        <ambientLight intensity={2} />
-        <OrbitControls />
-        <Suspense fallback={null}>
-          <RotatingEarth />
-        </Suspense>
-        <Environment preset='sunset' />
-      </Canvas>
+      {isMobile ? (
+        <img
+        className="w-full h-full object-cover"
+        src="/kind.png"
+        alt="Earth"
+        style={{ opacity: 0.4  }}
+      />
+      ) : (
+        <Canvas camera={{ position: [0.5, 0.5, 0.5] }}>
+          <ambientLight intensity={1} />
+          <directionalLight position={[5, 5, 5]} intensity={0.5} />
+          <OrbitControls />
+          <Suspense fallback={<span>Loading Earth...</span>}>
+            <RotatingEarth isMobile={isMobile} />
+          </Suspense>
+          <Environment preset="sunset" />
+        </Canvas>
+      )}
     </>
   )
 }

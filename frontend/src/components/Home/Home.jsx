@@ -11,7 +11,8 @@ import PopularCompanies from './PopularCompanies';
 
 const Home = () => {
   const { isAuthorized } = useContext(Context);
-  if (!isAuthorized) {
+  const isGuest = localStorage.getItem("guest") === "true";
+  if (!isAuthorized && !isGuest) {
     return <Navigate to={"/login"} />;
   }
   return (

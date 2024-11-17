@@ -39,7 +39,7 @@ const Navbar = () => {
     <>
       <nav className={`${navbarBgColor} text-white ${isAuthorized ? "block" : "hidden"}`}>
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center py-2">
+          <div className="flex justify-between items-center py-3">
             <Link to="/" className="flex items-center space-x-6">
               <img src="/JobQuestblanc.png" alt="logo" className="w-40 h-auto" />
             </Link>

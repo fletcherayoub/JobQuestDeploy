@@ -12,65 +12,102 @@ import {
   CSpinner,
   CAlert,
 } from "@coreui/react";
-import { RiSearchLine, RiBriefcaseLine, RiMapPin2Line, RiMoneyDollarCircleLine, RiCalendar2Line } from "react-icons/ri";
-
+import {
+  RiBriefcaseLine,
+  RiMapPin2Line,
+  RiMoneyDollarCircleLine,
+  RiCalendar2Line,
+  RiArrowRightLine,
+  RiSearchLine
+} from "react-icons/ri";
 const JobCard = ({ job }) => {
   const formatSalary = (job) => {
     if (job.fixedSalary) {
       return `$${job.fixedSalary.toLocaleString()}`;
     } else if (job.salaryFrom && job.salaryTo) {
       return `$${job.salaryFrom.toLocaleString()} - $${job.salaryTo.toLocaleString()}`;
-    } else {
-      return "Not specified";
     }
+    return "Salary not specified";
   };
 
   return (
-    <CCard className="h-full shadow-md hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1 hover:scale-70">
-      <Link to={`/job/${job._id}`} className="mt-auto">
-      <CCardImage
-        orientation="top"
-        src={job.companyLogo ? job.companyLogo.url : "/job.png"}
-        style={{ height: "12rem", objectFit: "cover" }}
-        className="transition-opacity duration-300"
-      />
-      <CCardBody className="flex flex-col justify-between p-6">
-        <div>
-          <CCardTitle className="text-xl font-bold text-gray-900 mb-2">
-            {job.title}
-          </CCardTitle>
-          <CCardText className="text-sm text-gray-600 mb-4">
-            {job.company}
-          </CCardText>
-          <div className="space-y-2 mb-4">
-            <div className="flex items-center text-sm text-gray-600">
-              <RiBriefcaseLine className="mr-2" />
-              <span>{job.category}</span>
+    <CCard className="group relative h-full border-0 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-gray-50 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-0">
+      <Link to={`/job/${job._id}`} className="flex flex-col h-full no-underline">
+        <div className="relative">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-[1]" />
+          <CCardImage
+            orientation="top"
+            src={job.companyLogo?.url || "/job.png"}
+            style={{ height: "240px", objectFit: "cover" }}
+            className="transition-transform duration-500 group-hover:scale-105"
+          />
+          <div className="absolute top-4 left-4 z-[2]">
+            <div className="inline-flex items-center bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full">
+              <img 
+                src={job.companyLogo?.url || "/company-default.png"} 
+                className="w-5 h-5 rounded-full mr-2"
+                alt={job.company}
+              />
+              <span className="text-sm font-medium text-gray-800">{job.company}</span>
             </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <RiMapPin2Line className="mr-2" />
-              <span>{job.city}</span>
-            </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <RiMoneyDollarCircleLine className="mr-2" />
-              <span>{formatSalary(job)}</span>
-            </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <RiCalendar2Line className="mr-2" />
-              <span className="text-gray-700 text-sm">Posted on: {new Date(job.jobPostedOn).toLocaleDateString()}</span>
+          </div>
+          <div className="absolute bottom-4 left-4 right-4 z-[2]">
+            <CCardTitle className="text-2xl font-bold text-white mb-2 line-clamp-2">
+              {job.title}
+            </CCardTitle>
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-block bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
+                {job.category}
+              </span>
+              <span className="inline-block bg-white/20 backdrop-blur-sm text-white px-3 py-1 rounded-full text-sm">
+                {formatSalary(job)}
+              </span>
             </div>
           </div>
         </div>
-          <CButton color="primary" className="w-full">
-            View Job Details
-          </CButton>
-        
-      </CCardBody>
+
+        <CCardBody className="flex flex-col flex-grow p-6">
+          <div className="flex-grow space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex items-center text-gray-700">
+                  <RiMapPin2Line className="w-5 h-5 mr-2 text-teal-600" />
+                  <span className="text-sm font-medium">{job.city}</span>
+                </div>
+              </div>
+              
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex items-center text-gray-700">
+                  <RiCalendar2Line className="w-5 h-5 mr-2 text-teal-600" />
+                  <span className="text-sm font-medium">
+                    {new Date(job.jobPostedOn).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <CCardText className="text-gray-600 line-clamp-2">
+                {job.description || "Join our team and be part of something amazing. We offer competitive benefits and a great work environment."}
+              </CCardText>
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              <span className="text-sm text-gray-600">Actively hiring</span>
+            </div>
+            <button className="group/button flex items-center text-teal-700 font-medium hover:text-teal-600 transition-colors">
+              View Details
+              <RiArrowRightLine className="ml-2 transition-transform duration-300 group-hover/button:translate-x-1" />
+            </button>
+          </div>
+        </CCardBody>
       </Link>
     </CCard>
   );
 };
-
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
   const [filterText, setFilterText] = useState("");
@@ -85,8 +122,10 @@ const Jobs = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [jobsPerPage] = useState(15);
+  const isGuest = localStorage.getItem("guest") === "true";
 
   useEffect(() => {
+    
     const fetchJobs = async () => {
       try {
         const res = await axios.get("https://jobquestdeploy.onrender.com/api/v1/job/getall", {
@@ -106,7 +145,7 @@ const Jobs = () => {
   }, []);
 
   useEffect(() => {
-    if (!isAuthorized) {
+    if (!isAuthorized && !isGuest) {
       navigateTo("/");
     }
   }, [isAuthorized, navigateTo]);
@@ -179,15 +218,58 @@ const Jobs = () => {
   };
 
   return (
-    <section className="jobs page py-10 bg-gray-100">
-      <div className="container mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center mb-8 text-gray-800 overflow-hidden">
-          Available Jobs
+      <section className="jobs page min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
+        {/* Modern Navbar Text Area */}
+        <div className="relative overflow-hidden py-20 bg-gradient-to-r from-gray-800 via-slate-900 to-zinc-900">
+          <div className="absolute inset-0">
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml,...')] opacity-[0.1] pattern-grid-lg"></div>
+            {/* Animated gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 via-blue-500/10 to-purple-500/10 animate-gradient"></div>
+          </div>
+  
+          <div className="relative container mx-auto px-4">
+            <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-5xl sm:text-5xl lg:text-6xl font-bold mb-6 text-white tracking-tight">
+          Find Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-blue-600 to-indigo-400">Dream Job</span>
         </h1>
+              <p className="text-teal-100 text-lg mb-8">
+                Explore <span className="text-teal-400 font-semibold">{jobs.length}+ jobs</span> from top companies in our job board
+              </p>
+              
+              {/* Stats Cards */}
+              <div className="flex flex-wrap justify-center gap-4 mt-8">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 rounded-full bg-teal-400"></div>
+                    <span className="text-white text-sm">Active Listings</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white mt-2">{jobs.length}</p>
+                </div>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
+                    <span className="text-white text-sm">Categories</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white mt-2">20+</p>
+                </div>
+                
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 rounded-full bg-purple-400"></div>
+                    <span className="text-white text-sm">Companies</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white mt-2">100+</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>  
 
+        <div className="container mx-auto px-4 -mt-8">
         {/* Search, Category, Salary, and City Filters */}
-        <div className="sticky top-0 bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-6 mb-8 border border-gray-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="relative">
               <RiSearchLine
                 className="absolute left-3 top-3 text-gray-400"
@@ -265,6 +347,10 @@ const Jobs = () => {
             />
           </div>
         </div>
+        </div>
+
+
+
 
         {/* Error Handling */}
         {error && (
@@ -282,14 +368,14 @@ const Jobs = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {currentJobs.length > 0 ? (
                 currentJobs.map((job) => (
                   <JobCard key={job._id} job={job} />
                 ))
               ) : (
                 <p className="text-center col-span-full text-gray-600 text-lg">
-                  No jobs found matching your criteria.
+                  No jobs found matching your search.
                 </p>
               )}
             </div>
@@ -332,7 +418,6 @@ const Jobs = () => {
             )}
           </>
         )}
-      </div>
     </section>
   );
 };

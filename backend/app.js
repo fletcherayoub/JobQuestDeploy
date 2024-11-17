@@ -12,6 +12,7 @@ import { dbConnection } from './database/dbConnection.js';
 import { errorMiddleware } from './middlewares/error.js';
 import { updateProfile } from './controllers/userController.js';
 import { isAuthenticated } from './middlewares/auth.js';
+import job from './cron/cron.js';
 
 const app = express();
 dotenv.config({ path: "./config/config.env" });
@@ -28,6 +29,8 @@ app.use(
         },
     })
 );
+
+job.start();
 
 // Initialize passport and session handling
 app.use(passport.initialize());

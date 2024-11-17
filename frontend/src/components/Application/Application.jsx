@@ -73,7 +73,7 @@ const Application = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100 p-4">
       
-      <div className="bg-white shadow-2xl rounded-lg px-8 pt-6 pb-8 mb-4 w-full max-w-2xl">
+      <div className="bg-white shadow-2xl rounded-lg px-8 pt-6 pb-8 mb-4 w-full max-w-2xl mt-8">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Job Application</h2>
         <form onSubmit={handleApplication} className="space-y-6">
           <div className="relative">

@@ -67,7 +67,8 @@ const MyJobs = () => {
       setEditingMode(null);
       // Refresh job list
       const { data } = await axios.get("https://jobquestdeploy.onrender.com/api/v1/job/getmyjobs", { withCredentials: true });
-      setMyJobs(data.myJobs);
+      const sortedJobs = data.myJobs.sort((a, b) => new Date(b.jobPostedOn) - new Date(a.jobPostedOn));
+      setMyJobs(sortedJobs);
     } catch (error) {
       toast.error(error.response.data.message);
     }
@@ -289,13 +290,19 @@ const MyJobs = () => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 accept="image/*"
               />
-              {localJob.companyLogo && (
-                <img 
-                  src={localJob.companyLogo.url} 
-                  alt="Current Company Logo" 
-                  className="mt-2 w-32 h-32 object-contain"
-                />
-              )}
+              {localJob.companyLogoPreview ? (
+                  <img 
+                    src={localJob.companyLogoPreview} 
+                    alt="New Company Logo" 
+                    className="mt-2 w-32 h-32 object-contain"
+                  />
+                ) : localJob.companyLogo && (
+                  <img 
+                    src={localJob.companyLogo.url} 
+                    alt="Current Company Logo" 
+                    className="mt-2 w-32 h-32 object-contain"
+                  />
+                )}
             </div>
           </div>
         </div>

@@ -240,19 +240,22 @@ p {
 
 .heroSection {
   display: flex;
+  overflow: hidden;
   flex-direction: column;
   padding: 75px 0 50px 0;
 }
 .heroSection .container,
 .heroSection .details {
+  overflow: hidden;
   min-width: 1500px;
   max-width: 1500px;
   margin: 0 auto;
 }
 .heroSection .container {
   display: flex;
-  height: 450px;
+  height: 500px;
   margin-bottom: 1.75rem;
+  margin-top: 20px;
 }
 .heroSection .container .title,
 .heroSection .container .image {
@@ -260,11 +263,13 @@ p {
 }
 .heroSection .container .title {
   display: flex;
+  margin-top: 2rem;
   flex-direction: column;
   justify-content: center;
 }
 .heroSection .container .title h1 {
   max-width: 600px;
+  
 }
 .heroSection .container .title p {
   margin-top: 1.5rem;
@@ -1222,7 +1227,7 @@ nav .hamburger {
 }
 @media (max-width: 1130px) {
   .page {
-    padding-top: 120px;
+    padding-top: auto;
   }
   nav {
     position: fixed;

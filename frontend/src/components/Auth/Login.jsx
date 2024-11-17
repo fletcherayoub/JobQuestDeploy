@@ -31,7 +31,12 @@ const Login = () => {
       [e.target.name]: e.target.value,
     });
   };
-
+  const handleGuestLogin = () => {
+    localStorage.setItem("guest", true);
+    setIsAuthorized(true); // Set authorization for guest login
+    navigate("/home");
+  };
+  
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
     setError('');
@@ -263,6 +268,28 @@ const Login = () => {
                   'Sign in'
                 )}
               </button>
+              <div className="mt-6 flex items-center justify-center text-sm">
+                <button
+                  onClick={handleGuestLogin}
+                  className="flex items-center space-x-2 text-teal-600 hover:text-teal-500 focus:outline-none transition-colors duration-200"
+                >
+                  {/* Guest User Icon */}
+                  <svg 
+                    className="w-4 h-4" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth="2" 
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
+                    />
+                  </svg>
+                  <span>Guest mode</span>
+                </button>
+              </div>
             </form>
           </div>
 
