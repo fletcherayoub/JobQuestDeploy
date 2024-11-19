@@ -12,7 +12,7 @@ import { dbConnection } from './database/dbConnection.js';
 import { errorMiddleware } from './middlewares/error.js';
 import { updateProfile } from './controllers/userController.js';
 import { isAuthenticated } from './middlewares/auth.js';
-import cron from './cron/cron.js';
+import crons from './cron/cron.js';
 
 
 const app = express();
@@ -31,7 +31,7 @@ app.use(
     })
 );
 
-cron.start();
+crons.start();
 
 // Initialize passport and session handling
 app.use(passport.initialize());

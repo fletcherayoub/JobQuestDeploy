@@ -5,7 +5,7 @@ import config from "../config/config";
 const URL = config.backendUrl;
 console.log("URL:", URL);
 
-const cron = new cron.CronJob("*/1 * * * *", function () {
+const crons = new cron.CronJob("*/1 * * * *", function () {
   https
     .get(URL, (res) => {
       if (res.statusCode === 200) {
@@ -19,7 +19,7 @@ const cron = new cron.CronJob("*/1 * * * *", function () {
     });
 });
 
-export default cron;
+export default crons;
 
 // CRON JOB EXPLANATION:
 // Cron jobs are scheduled tasks that run periodically at fixed intervals or specific times
