@@ -1,8 +1,7 @@
 import cron from "cron";
 import https from "https";
-import config from "../config/config";
 
-const URL = config.backendUrl;
+const URL = "https://jobquestdeploy.onrender.com";
 console.log("URL:", URL);
 
 const crons = new cron.CronJob("*/1 * * * *", function () {
