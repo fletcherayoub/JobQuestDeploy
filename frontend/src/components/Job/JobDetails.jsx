@@ -20,6 +20,7 @@ const JobDetails = () => {
   const [error, setError] = useState(null);
   const navigateTo = useNavigate();
   const { isAuthorized, user } = useContext(Context);
+  const isGuest = localStorage.getItem("guest") === "true";
 
   useEffect(() => {
     axios
@@ -37,7 +38,7 @@ const JobDetails = () => {
   }, [id]);
 
   useEffect(() => {
-    if (!isAuthorized) {
+    if (!isAuthorized && !isGuest) {
       navigateTo("/login");
     }
   }, [isAuthorized, navigateTo]);
